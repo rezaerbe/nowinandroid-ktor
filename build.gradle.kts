@@ -3,19 +3,14 @@ val kotlin_version: String by project
 val logback_version: String by project
 
 plugins {
+    application
     kotlin("jvm") version "1.7.21"
     id("io.ktor.plugin") version "2.2.2"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.7.21"
 }
 
-group = "com.erbe"
-version = "1.0.0"
-
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
-
-    val isDevelopment: Boolean = project.ext.has("development")
-    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 
 repositories {
@@ -23,11 +18,10 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-default-headers-jvm:$ktor_version")
-    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-host-common-jvm:$ktor_version")
+    implementation("io.ktor:ktor-server-core:$ktor_version")
+    implementation("io.ktor:ktor-server-netty:$ktor_version")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+    implementation("io.ktor:ktor-server-default-headers:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
 }
