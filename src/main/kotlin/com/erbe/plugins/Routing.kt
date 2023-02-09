@@ -2,7 +2,6 @@ package com.erbe.plugins
 
 import com.erbe.routes.articleRouting
 import com.erbe.routes.podcastRouting
-import com.erbe.routes.topicRouting
 import com.erbe.routes.videoRouting
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
@@ -23,6 +22,5 @@ fun Application.configureRouting() {
         articleRouting()
         podcastRouting()
         videoRouting()
-        topicRouting()
     }
 }

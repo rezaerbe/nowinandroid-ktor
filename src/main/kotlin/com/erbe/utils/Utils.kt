@@ -1,17 +1,41 @@
 package com.erbe.utils
 
+import com.erbe.models.Error
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.response.respond
 import java.time.LocalDate
+import java.util.UUID
+
+fun getId(): String {
+    return UUID.randomUUID().toString()
+}
+
+fun date(year: Int, month: Int, dayOfMonth: Int): String {
+    return LocalDate.of(year, month, dayOfMonth).toString()
+}
 
 fun contentArticle(content: String): String {
     val url = "http://192.168.45.125:8080/static/article/"
     return url + content
 }
 
-fun image(image: String): String {
-    val url = "https://miro.medium.com/"
-    return url + image
+fun contentPodcast(content: String): String {
+    val url = "http://192.168.45.125:8080/static/podcast/"
+    return url + content
 }
 
-fun date(year: Int, month: Int, dayOfMonth: Int): String {
-    return LocalDate.of(year, month, dayOfMonth).toString()
+fun contentVideo(content: String): String {
+    val url = "http://192.168.45.125:8080/static/video/"
+    return url + content
+}
+
+suspend fun ApplicationCall.errorRespond(httpStatusCode: HttpStatusCode) {
+    return this.respond(
+        httpStatusCode,
+        Error(
+            httpStatusCode.value,
+            httpStatusCode.description
+        )
+    )
 }
