@@ -3,11 +3,13 @@ package com.erbe.models
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Data<T>(
+data class Success<T>(
+    val code: Int,
+    val message: String,
     val data: T
 )
 
 @Serializable
 data class Items<T>(
-    val items: MutableList<T>
+    val items: List<T>
 )

@@ -13,5 +13,5 @@ data class Content(
     val date: String,
     val time: String,
     val topic: Topic,
-    val url: String
+    val url: String?
 )

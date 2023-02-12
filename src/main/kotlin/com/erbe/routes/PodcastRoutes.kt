@@ -1,9 +1,9 @@
 package com.erbe.routes
 
-import com.erbe.models.Data
 import com.erbe.models.Items
 import com.erbe.storage.podcast.podcastStorage
 import com.erbe.utils.errorRespond
+import com.erbe.utils.successRespond
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
@@ -16,7 +16,8 @@ fun Route.podcastRouting() {
         get {
             try {
                 if (podcastStorage.isNotEmpty()) {
-                    call.respond(HttpStatusCode.OK, Data(Items(podcastStorage)))
+                    val response = successRespond(HttpStatusCode.OK, Items(podcastStorage))
+                    call.respond(response.first, response.second)
                 } else {
                     call.errorRespond(HttpStatusCode.NotFound)
                 }
