@@ -55,4 +55,4 @@ val podcastStorage = mutableListOf(
         topic = podcastTopicStorage[0],
         url = "https://open.spotify.com/episode/1ORsxljfZJXPEV84gFPRva"
     )
-)
+).sortedByDescending { it.date }

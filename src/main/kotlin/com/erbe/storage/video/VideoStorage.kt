@@ -55,4 +55,4 @@ val videoStorage = mutableListOf(
         topic = videoTopicStorage[0],
         url = "https://youtu.be/WgxwzyMuKkQ"
     )
-)
+).sortedByDescending { it.date }

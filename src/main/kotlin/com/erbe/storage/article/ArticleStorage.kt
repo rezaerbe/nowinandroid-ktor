@@ -55,4 +55,4 @@ val articleStorage = mutableListOf(
         topic = articleTopicStorage[0],
         url = "https://medium.com/androiddevelopers/now-in-android-71-248cd926bf7c"
     )
-)
+).sortedByDescending { it.date }

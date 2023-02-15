@@ -5,15 +5,15 @@ import com.erbe.models.Success
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respond
-import java.time.LocalDate
+import kotlinx.datetime.LocalDate
 import java.util.UUID
 
 fun getId(): String {
     return UUID.randomUUID().toString()
 }
 
-fun date(year: Int, month: Int, dayOfMonth: Int): String {
-    return LocalDate.of(year, month, dayOfMonth).toString()
+fun date(year: Int, month: Int, dayOfMonth: Int): LocalDate {
+    return LocalDate(year, month, dayOfMonth)
 }
 
 fun contentArticle(content: String): String {
