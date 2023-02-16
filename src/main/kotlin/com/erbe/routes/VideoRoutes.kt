@@ -31,7 +31,7 @@ fun Route.videoRouting() {
             try {
                 if (videoStorage.isNotEmpty()) {
                     val video = videoStorage.take(5)
-                    val response = successRespond(HttpStatusCode.OK, video)
+                    val response = successRespond(HttpStatusCode.OK, Items(video))
                     call.respond(response.first, response.second)
                 } else {
                     call.errorRespond(HttpStatusCode.NotFound)
@@ -48,7 +48,7 @@ fun Route.videoRouting() {
                     ?: return@get call.errorRespond(HttpStatusCode.NotFound)
                 val video = videoStorage.filter { it.topic == topic }
                 if (video.isNotEmpty()) {
-                    val response = successRespond(HttpStatusCode.OK, video)
+                    val response = successRespond(HttpStatusCode.OK, Items(video))
                     call.respond(response.first, response.second)
                 } else {
                     call.errorRespond(HttpStatusCode.NotFound)
@@ -65,7 +65,7 @@ fun Route.videoRouting() {
                     ?: return@get call.errorRespond(HttpStatusCode.NotFound)
                 val video = videoStorage.filter { it.topic == topic }.take(5)
                 if (video.isNotEmpty()) {
-                    val response = successRespond(HttpStatusCode.OK, video)
+                    val response = successRespond(HttpStatusCode.OK, Items(video))
                     call.respond(response.first, response.second)
                 } else {
                     call.errorRespond(HttpStatusCode.NotFound)

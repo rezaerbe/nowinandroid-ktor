@@ -31,7 +31,7 @@ fun Route.articleRouting() {
             try {
                 if (articleStorage.isNotEmpty()) {
                     val article = articleStorage.take(5)
-                    val response = successRespond(HttpStatusCode.OK, article)
+                    val response = successRespond(HttpStatusCode.OK, Items(article))
                     call.respond(response.first, response.second)
                 } else {
                     call.errorRespond(HttpStatusCode.NotFound)
@@ -48,7 +48,7 @@ fun Route.articleRouting() {
                     ?: return@get call.errorRespond(HttpStatusCode.NotFound)
                 val article = articleStorage.filter { it.topic == topic }
                 if (article.isNotEmpty()) {
-                    val response = successRespond(HttpStatusCode.OK, article)
+                    val response = successRespond(HttpStatusCode.OK, Items(article))
                     call.respond(response.first, response.second)
                 } else {
                     call.errorRespond(HttpStatusCode.NotFound)
@@ -65,7 +65,7 @@ fun Route.articleRouting() {
                     ?: return@get call.errorRespond(HttpStatusCode.NotFound)
                 val article = articleStorage.filter { it.topic == topic }.take(5)
                 if (article.isNotEmpty()) {
-                    val response = successRespond(HttpStatusCode.OK, article)
+                    val response = successRespond(HttpStatusCode.OK, Items(article))
                     call.respond(response.first, response.second)
                 } else {
                     call.errorRespond(HttpStatusCode.NotFound)

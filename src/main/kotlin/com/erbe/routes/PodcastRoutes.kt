@@ -31,7 +31,7 @@ fun Route.podcastRouting() {
             try {
                 if (podcastStorage.isNotEmpty()) {
                     val podcast = podcastStorage.take(5)
-                    val response = successRespond(HttpStatusCode.OK, podcast)
+                    val response = successRespond(HttpStatusCode.OK, Items(podcast))
                     call.respond(response.first, response.second)
                 } else {
                     call.errorRespond(HttpStatusCode.NotFound)
@@ -48,7 +48,7 @@ fun Route.podcastRouting() {
                     ?: return@get call.errorRespond(HttpStatusCode.NotFound)
                 val podcast = podcastStorage.filter { it.topic == topic }
                 if (podcast.isNotEmpty()) {
-                    val response = successRespond(HttpStatusCode.OK, podcast)
+                    val response = successRespond(HttpStatusCode.OK, Items(podcast))
                     call.respond(response.first, response.second)
                 } else {
                     call.errorRespond(HttpStatusCode.NotFound)
@@ -65,7 +65,7 @@ fun Route.podcastRouting() {
                     ?: return@get call.errorRespond(HttpStatusCode.NotFound)
                 val podcast = podcastStorage.filter { it.topic == topic }.take(5)
                 if (podcast.isNotEmpty()) {
-                    val response = successRespond(HttpStatusCode.OK, podcast)
+                    val response = successRespond(HttpStatusCode.OK, Items(podcast))
                     call.respond(response.first, response.second)
                 } else {
                     call.errorRespond(HttpStatusCode.NotFound)
