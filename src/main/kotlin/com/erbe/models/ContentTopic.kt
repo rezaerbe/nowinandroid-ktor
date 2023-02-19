@@ -4,7 +4,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Content(
+data class ContentTopic(
     val id: String,
     val tag: String,
     val title: String,
@@ -13,5 +13,6 @@ data class Content(
     val image: String,
     val date: LocalDate,
     val time: String,
+    val topic: Topic?,
     val url: String
 )

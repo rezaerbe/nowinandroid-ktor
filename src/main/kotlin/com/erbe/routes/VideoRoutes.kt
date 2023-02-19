@@ -1,7 +1,11 @@
 package com.erbe.routes
 
 import com.erbe.models.Items
-import com.erbe.storage.video.videoStorage
+import com.erbe.storage.video.videoContentTopicLatest
+import com.erbe.storage.video.videoContentTopicStorage
+import com.erbe.storage.video.videoDetail
+import com.erbe.storage.video.videoTopicContentLatest
+import com.erbe.storage.video.videoTopicContentStorage
 import com.erbe.storage.video.videoTopicStorage
 import com.erbe.utils.errorRespond
 import com.erbe.utils.successRespond
@@ -16,8 +20,9 @@ fun Route.videoRouting() {
     route("/video") {
         get {
             try {
-                if (videoStorage.isNotEmpty()) {
-                    val response = successRespond(HttpStatusCode.OK, Items(videoStorage))
+                val video = videoContentTopicStorage()
+                if (video.isNotEmpty()) {
+                    val response = successRespond(HttpStatusCode.OK, Items(video))
                     call.respond(response.first, response.second)
                 } else {
                     call.errorRespond(HttpStatusCode.NotFound)
@@ -29,8 +34,8 @@ fun Route.videoRouting() {
 
         get("latest") {
             try {
-                if (videoStorage.isNotEmpty()) {
-                    val video = videoStorage.take(5)
+                val video = videoContentTopicLatest()
+                if (video.isNotEmpty()) {
                     val response = successRespond(HttpStatusCode.OK, Items(video))
                     call.respond(response.first, response.second)
                 } else {
@@ -44,11 +49,9 @@ fun Route.videoRouting() {
         get("tag/{category?}") {
             try {
                 val category = call.parameters["category"] ?: return@get call.errorRespond(HttpStatusCode.BadRequest)
-                val topic = videoTopicStorage.find { it.tag == category }
-                    ?: return@get call.errorRespond(HttpStatusCode.NotFound)
-                val video = videoStorage.filter { it.topic == topic }
-                if (video.isNotEmpty()) {
-                    val response = successRespond(HttpStatusCode.OK, Items(video))
+                val video = videoTopicContentStorage(category)
+                if (video != null) {
+                    val response = successRespond(HttpStatusCode.OK, video)
                     call.respond(response.first, response.second)
                 } else {
                     call.errorRespond(HttpStatusCode.NotFound)
@@ -58,12 +61,9 @@ fun Route.videoRouting() {
             }
         }
 
-        get("tag/{category?}/latest") {
+        get("tag/latest") {
             try {
-                val category = call.parameters["category"] ?: return@get call.errorRespond(HttpStatusCode.BadRequest)
-                val topic = videoTopicStorage.find { it.tag == category }
-                    ?: return@get call.errorRespond(HttpStatusCode.NotFound)
-                val video = videoStorage.filter { it.topic == topic }.take(5)
+                val video = videoTopicContentLatest()
                 if (video.isNotEmpty()) {
                     val response = successRespond(HttpStatusCode.OK, Items(video))
                     call.respond(response.first, response.second)
@@ -78,10 +78,13 @@ fun Route.videoRouting() {
         get("{id?}") {
             try {
                 val id = call.parameters["id"] ?: return@get call.errorRespond(HttpStatusCode.BadRequest)
-                val video = videoStorage.find { it.id == id }
-                    ?: return@get call.errorRespond(HttpStatusCode.NotFound)
-                val response = successRespond(HttpStatusCode.OK, video)
-                call.respond(response.first, response.second)
+                val video = videoDetail(id)
+                if (video != null) {
+                    val response = successRespond(HttpStatusCode.OK, video)
+                    call.respond(response.first, response.second)
+                } else {
+                    call.errorRespond(HttpStatusCode.NotFound)
+                }
             } catch (e: Exception) {
                 call.errorRespond(HttpStatusCode.InternalServerError)
             }
@@ -89,8 +92,9 @@ fun Route.videoRouting() {
 
         get("tag") {
             try {
-                if (videoTopicStorage.isNotEmpty()) {
-                    val response = successRespond(HttpStatusCode.OK, Items(videoTopicStorage))
+                val video = videoTopicStorage
+                if (video.isNotEmpty()) {
+                    val response = successRespond(HttpStatusCode.OK, Items(video))
                     call.respond(response.first, response.second)
                 } else {
                     call.errorRespond(HttpStatusCode.NotFound)

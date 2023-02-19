@@ -1,7 +1,11 @@
 package com.erbe.routes
 
 import com.erbe.models.Items
-import com.erbe.storage.podcast.podcastStorage
+import com.erbe.storage.podcast.podcastContentTopicLatest
+import com.erbe.storage.podcast.podcastContentTopicStorage
+import com.erbe.storage.podcast.podcastDetail
+import com.erbe.storage.podcast.podcastTopicContentLatest
+import com.erbe.storage.podcast.podcastTopicContentStorage
 import com.erbe.storage.podcast.podcastTopicStorage
 import com.erbe.utils.errorRespond
 import com.erbe.utils.successRespond
@@ -16,8 +20,9 @@ fun Route.podcastRouting() {
     route("/podcast") {
         get {
             try {
-                if (podcastStorage.isNotEmpty()) {
-                    val response = successRespond(HttpStatusCode.OK, Items(podcastStorage))
+                val podcast = podcastContentTopicStorage()
+                if (podcast.isNotEmpty()) {
+                    val response = successRespond(HttpStatusCode.OK, Items(podcast))
                     call.respond(response.first, response.second)
                 } else {
                     call.errorRespond(HttpStatusCode.NotFound)
@@ -29,8 +34,8 @@ fun Route.podcastRouting() {
 
         get("latest") {
             try {
-                if (podcastStorage.isNotEmpty()) {
-                    val podcast = podcastStorage.take(5)
+                val podcast = podcastContentTopicLatest()
+                if (podcast.isNotEmpty()) {
                     val response = successRespond(HttpStatusCode.OK, Items(podcast))
                     call.respond(response.first, response.second)
                 } else {
@@ -44,11 +49,9 @@ fun Route.podcastRouting() {
         get("tag/{category?}") {
             try {
                 val category = call.parameters["category"] ?: return@get call.errorRespond(HttpStatusCode.BadRequest)
-                val topic = podcastTopicStorage.find { it.tag == category }
-                    ?: return@get call.errorRespond(HttpStatusCode.NotFound)
-                val podcast = podcastStorage.filter { it.topic == topic }
-                if (podcast.isNotEmpty()) {
-                    val response = successRespond(HttpStatusCode.OK, Items(podcast))
+                val podcast = podcastTopicContentStorage(category)
+                if (podcast != null) {
+                    val response = successRespond(HttpStatusCode.OK, podcast)
                     call.respond(response.first, response.second)
                 } else {
                     call.errorRespond(HttpStatusCode.NotFound)
@@ -58,12 +61,9 @@ fun Route.podcastRouting() {
             }
         }
 
-        get("tag/{category?}/latest") {
+        get("tag/latest") {
             try {
-                val category = call.parameters["category"] ?: return@get call.errorRespond(HttpStatusCode.BadRequest)
-                val topic = podcastTopicStorage.find { it.tag == category }
-                    ?: return@get call.errorRespond(HttpStatusCode.NotFound)
-                val podcast = podcastStorage.filter { it.topic == topic }.take(5)
+                val podcast = podcastTopicContentLatest()
                 if (podcast.isNotEmpty()) {
                     val response = successRespond(HttpStatusCode.OK, Items(podcast))
                     call.respond(response.first, response.second)
@@ -78,10 +78,13 @@ fun Route.podcastRouting() {
         get("{id?}") {
             try {
                 val id = call.parameters["id"] ?: return@get call.errorRespond(HttpStatusCode.BadRequest)
-                val podcast = podcastStorage.find { it.id == id }
-                    ?: return@get call.errorRespond(HttpStatusCode.NotFound)
-                val response = successRespond(HttpStatusCode.OK, podcast)
-                call.respond(response.first, response.second)
+                val podcast = podcastDetail(id)
+                if (podcast != null) {
+                    val response = successRespond(HttpStatusCode.OK, podcast)
+                    call.respond(response.first, response.second)
+                } else {
+                    call.errorRespond(HttpStatusCode.NotFound)
+                }
             } catch (e: Exception) {
                 call.errorRespond(HttpStatusCode.InternalServerError)
             }
@@ -89,8 +92,9 @@ fun Route.podcastRouting() {
 
         get("tag") {
             try {
-                if (podcastTopicStorage.isNotEmpty()) {
-                    val response = successRespond(HttpStatusCode.OK, Items(podcastTopicStorage))
+                val podcast = podcastTopicStorage
+                if (podcast.isNotEmpty()) {
+                    val response = successRespond(HttpStatusCode.OK, Items(podcast))
                     call.respond(response.first, response.second)
                 } else {
                     call.errorRespond(HttpStatusCode.NotFound)

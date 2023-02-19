@@ -6,28 +6,25 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respond
 import kotlinx.datetime.LocalDate
-import java.util.UUID
 
-fun getId(): String {
-    return UUID.randomUUID().toString()
-}
+const val base_url = "http://192.168.183.125:8080"
 
 fun date(year: Int, month: Int, dayOfMonth: Int): LocalDate {
     return LocalDate(year, month, dayOfMonth)
 }
 
 fun contentArticle(content: String): String {
-    val url = "http://192.168.45.125:8080/static/article/"
+    val url = "$base_url/static/article/"
     return url + content
 }
 
 fun contentPodcast(content: String): String {
-    val url = "http://192.168.45.125:8080/static/podcast/"
+    val url = "$base_url/static/podcast/"
     return url + content
 }
 
 fun contentVideo(content: String): String {
-    val url = "http://192.168.45.125:8080/static/video/"
+    val url = "$base_url/static/video/"
     return url + content
 }
 
